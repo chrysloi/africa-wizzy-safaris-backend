@@ -1,39 +1,37 @@
-import express from "express";
-import morgan from "morgan";
+import "dotenv/config";
 import mongoose from "mongoose";
+import express, { Express, Request, Response } from "express";
+import env from "./util/envValidate";
+import morgan from "morgan";
 import cors from "cors";
-import dotenv from "dotenv";
 
-dotenv.config();
-const app = express();
+// dotenv.config();
+const app: Express = express();
 
-const { PORT, MONGODB_URL } = process.env;
+const { PORT, MONGODB_URL } = env;
 
 app.use(cors({ origin: "*" }));
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use("/api", (req, res) => {
-  res.status(200).json({ message: "welcome to my server" });
+app.use("/", (req: Request, res: Response) => {
+  res.send("Welcome to my server");
 });
 
-app.use("/**", (req, res, next) => {
+app.use("/**", (req: Request, res: Response) => {
   res.status(404).json({ message: "Not found" });
 });
 
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, async () => {
   mongoose.set("strictQuery", false);
   mongoose
-    .connect(MONGODB_URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    })
+    .connect(MONGODB_URL)
     .then(() => {
       console.log("connected to mongodb");
       console.info("you server is running well pn port: ", PORT);
     })
-    .catch((err) => {
+    .catch((err: Error) => {
       console.log(err);
     });
 });
