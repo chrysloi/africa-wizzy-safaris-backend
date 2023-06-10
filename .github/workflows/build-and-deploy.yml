@@ -37,4 +37,4 @@ jobs:
         with:
           host: ${{ secrets.DIGITALOCEAN_SERVER_IP }}
           username: ${{ secrets.DIGITALOCEAN_USERNAME }}
-          key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
+          password: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
