@@ -2,6 +2,8 @@ import "dotenv/config";
 import express, { Express, NextFunction, Request, Response } from "express";
 import morgan from "morgan";
 import cors from "cors";
+import swaggerUi from "swagger-ui-express";
+import { options } from "./swagger/index";
 import userRoutes from "./modules/user/userRoutes";
 import packageRoutes from "./modules/packages/packageRoutes";
 
@@ -16,6 +18,7 @@ app.use("/welcome", (req: Request, res: Response) => {
   res.send("Welcome to my server");
 });
 
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(options.definition));
 app.use("/user", userRoutes);
 app.use("/package", packageRoutes);
 

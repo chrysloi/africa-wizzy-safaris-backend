@@ -1,34 +1,27 @@
 import { InferSchemaType, Schema, model } from "mongoose";
 
+const DaySchema = new Schema({
+  day: String,
+  details: String,
+  startTime: String,
+  endTime: String,
+  included: [{ title: String, details: String }],
+});
+
 const PackageSchema = new Schema(
   {
-    title: {
-      type: String,
-      required: true,
-    },
-    happenigDate: {
-      type: String,
-      required: true,
-    },
-    description: {
-      type: String,
-      required: true,
-    },
-    cost: {
-      type: String,
-      required: true,
-    },
+    title: String,
+    coverImage: String,
+    details: String,
+    departureTime: String,
+    returnTime: String,
+    travelMode: String,
+    cost: String,
     published: {
       type: Boolean,
-      required: true,
       default: false,
     },
-    costCovers: [
-      {
-        type: String,
-        required: true,
-      },
-    ],
+    days: [DaySchema],
   },
   { timestamps: true }
 );
