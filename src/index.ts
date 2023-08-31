@@ -17,3 +17,5 @@ mongoose
   .catch((err: Error) => {
     console.log(err);
   });
+
+export default app;

@@ -22,6 +22,10 @@ const PackageSchema = new Schema(
       default: false,
     },
     days: [DaySchema],
+    daysNumber: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );

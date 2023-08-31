@@ -18,10 +18,15 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-    status: {
-      type: String,
+    is_deleted: {
+      type: Boolean,
       required: true,
-      default: "active",
+      default: false,
+    },
+    is_verified: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
   },
   { timestamps: true }
