@@ -14,8 +14,27 @@ const createPackage = asyncHandler(async (req: Request, res: Response) => {
 });
 
 const uploadCoverImage = asyncHandler(async (req: any, res: Response) => {
-  const url = req.headers.host + `/images/${req.file.originalname}`;
+  console.log(req.file);
 
+  const url = req.headers.host + `/images/${req.file.filename}`;
+
+  return JsonResponse(res, {
+    status: OK,
+    url,
+  });
+});
+
+const updateCoverImage = asyncHandler(async (req: any, res: Response) => {
+  const url = req.headers.host + `/images/${req.file.filename}`;
+
+  const packages = await Package.findById(req.params.id);
+  if (!packages)
+    return JsonResponse(res, {
+      status: NOT_FOUND,
+      message: "Package not found can't update cover image",
+    });
+
+  await Package.findByIdAndUpdate(req.params.id, { coverImage: url });
   return JsonResponse(res, {
     status: OK,
     url,
@@ -99,5 +118,6 @@ export const PackageController = {
   addActivities,
   updatePackage,
   uploadCoverImage,
+  updateCoverImage,
   removeCoverImage,
 };

@@ -20,6 +20,12 @@ route.delete(
 route.get("/:id", PackageController.getSinglePackage);
 route.post("/:id", isAuthenticated, PackageController.addActivities);
 route.patch("/:id", isAuthenticated, PackageController.updatePackage);
+route.patch(
+  "/:id/updateImage",
+  isAuthenticated,
+  upload.single("coverImage"),
+  PackageController.updateCoverImage
+);
 route.get("/", PackageController.getPackages);
 
 export default route;
