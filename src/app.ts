@@ -18,7 +18,7 @@ app.use("/welcome", (req: Request, res: Response) => {
   res.send("Welcome to my server");
 });
 
-app.use("/images", express.static("uploads/images"));
+app.use("/images", express.static("src/uploads/images"));
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(options.definition));
 app.use("/user", userRoutes);
 app.use("/package", packageRoutes);

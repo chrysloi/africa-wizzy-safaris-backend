@@ -42,7 +42,7 @@ const updateCoverImage = asyncHandler(async (req: any, res: Response) => {
 });
 
 const removeCoverImage = asyncHandler(async (req: Request, res: Response) => {
-  const uploadsDirectory = "uploads/images";
+  const uploadsDirectory = "src/uploads/images";
   const filename = req.params.filename;
   const filePath = path.join(uploadsDirectory, filename);
 
