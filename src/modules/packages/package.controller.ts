@@ -1,63 +1,53 @@
 import { NextFunction, Request, Response } from "express";
 import { Package } from "../../models/package.model";
-import { BAD_REQUEST, NOT_FOUND, OK } from "http-status";
+import { BAD_REQUEST, CREATED, NOT_FOUND, OK } from "http-status";
 import { asyncHandler } from "../middlewares/asynchandler";
 import { JsonResponse } from "../../util/jsonResponse";
-import path from "path";
-import fs from "fs";
+import cloudinary from "../../config/multer";
+import Joi from "joi";
 
-const createPackage = asyncHandler(async (req: Request, res: Response) => {
-  console.log(req.body);
-
-  const newPackage = await Package.create(req.body);
-  return JsonResponse(res, { status: OK, newPackage });
-});
-
-const uploadCoverImage = asyncHandler(async (req: any, res: Response) => {
-  console.log(req.file);
-
-  const url = req.headers.host + `/images/${req.file.filename}`;
-
-  return JsonResponse(res, {
-    status: OK,
-    url,
+const createPackage = asyncHandler(async (req: any, res: Response) => {
+  const schema = Joi.object({
+    title: Joi.string().required(),
+    coverImage: Joi.string().required(),
+    details: Joi.string().required(),
+    departureTime: Joi.string().required(),
+    returnTime: Joi.string().required(),
+    travelMode: Joi.string().required(),
+    cost: Joi.string().required(),
   });
+
+  const upload = await cloudinary.uploader.upload(req.file.path, {
+    public_id: req.file.originalname,
+    folder: "wizzy-safaris/images",
+  });
+
+  const { error } = schema.validate({...req.body, coverImage: upload.secure_url});
+  const newPackage = await Package.create({
+    ...req.body,
+    coverImage: upload.secure_url,
+  });
+  return JsonResponse(res, { status: CREATED, newPackage });
 });
 
 const updateCoverImage = asyncHandler(async (req: any, res: Response) => {
-  const url = req.headers.host + `/images/${req.file.filename}`;
-
   const packages = await Package.findById(req.params.id);
   if (!packages)
     return JsonResponse(res, {
       status: NOT_FOUND,
       message: "Package not found can't update cover image",
     });
-
-  await Package.findByIdAndUpdate(req.params.id, { coverImage: url });
-  return JsonResponse(res, {
-    status: OK,
-    url,
-  });
-});
-
-const removeCoverImage = asyncHandler(async (req: Request, res: Response) => {
-  const uploadsDirectory = "src/uploads/images";
-  const filename = req.params.filename;
-  const filePath = path.join(uploadsDirectory, filename);
-
-  fs.unlink(filePath, (err: any) => {
-    if (err) {
-      console.error(err);
-      res.status(500).send("Error deleting the image.");
-    } else {
-      res.send("Image deleted successfully.");
-    }
+  const upload = await cloudinary.uploader.upload(req.file.path, {
+    public_id: req.file.originalname,
+    folder: "wizzy-safaris/images",
   });
 
+  await Package.findByIdAndUpdate(req.params.id, {
+    coverImage: upload.secure_url,
+  });
   return JsonResponse(res, {
     status: OK,
-    message: "Image deleted successfully",
+    coverImage: upload.secure_url,
   });
 });
 
@@ -117,7 +107,5 @@ export const PackageController = {
   getSinglePackage,
   addActivities,
   updatePackage,
-  uploadCoverImage,
   updateCoverImage,
-  removeCoverImage,
 };

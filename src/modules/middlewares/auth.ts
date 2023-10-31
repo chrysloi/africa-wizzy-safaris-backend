@@ -7,7 +7,6 @@ import { FORBIDDEN, UNAUTHORIZED } from "http-status";
 export const isAuthenticated = asyncHandler(
   async (req: any, res: any, next: any) => {
     const authHeader = req.header("Authorization") || req.header("token");
-    console.log(authHeader, "authHeader");
 
     if (!authHeader) {
       return JsonResponse(res, {

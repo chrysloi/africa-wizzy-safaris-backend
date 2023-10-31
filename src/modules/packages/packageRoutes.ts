@@ -2,20 +2,16 @@ import { Router } from "express";
 import { PackageController } from "./package.controller";
 import { isAuthenticated } from "../middlewares/auth";
 import { upload } from "../../config/multer";
+import { createPackageValidationMiddleware } from "../middlewares/packages";
 
 const route: Router = Router();
 
-route.post("/", isAuthenticated, PackageController.createPackage);
 route.post(
-  "/imageUpload",
+  "/",
   isAuthenticated,
   upload.single("coverImage"),
-  PackageController.uploadCoverImage
-);
-route.delete(
-  "/imageDelete/:filename",
-  isAuthenticated,
-  PackageController.removeCoverImage
+  createPackageValidationMiddleware,
+  PackageController.createPackage
 );
 route.get("/:id", PackageController.getSinglePackage);
 route.post("/:id", isAuthenticated, PackageController.addActivities);

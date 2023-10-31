@@ -1,21 +1,17 @@
 import multer from "multer";
-import fs from "fs";
-import path from "path";
+import { v2 as cloudinary } from "cloudinary";
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const uploadsDirectory = "src/uploads/images";
-    if (!fs.existsSync(uploadsDirectory)) {
-      fs.mkdirSync(uploadsDirectory);
-    }
-    cb(null, uploadsDirectory);
-  },
-  filename: function (req, file, cb) {
-    console.log(file, "file");
+const storage = multer.diskStorage({});
 
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  },
+const { CLOUDINARY_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } =
+  process.env;
+
+cloudinary.config({
+  cloud_name: CLOUDINARY_NAME,
+  api_key: CLOUDINARY_API_KEY,
+  api_secret: CLOUDINARY_API_SECRET,
+  private_cdn: true,
 });
 
-export const upload = multer({ storage: storage });
+export default cloudinary;
+export const upload = multer({ storage });
