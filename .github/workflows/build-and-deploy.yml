@@ -49,7 +49,7 @@ jobs:
       - name: zip
         uses: montudor/action-zip@v1.0.0
         with:
-          args: zip -qq -r ./bundle.zip ./
+          args: zip -qq -r ./bundle.zip ./dist
       - name: default deploy
         uses: appleboy/lambda-action@master
         with:
