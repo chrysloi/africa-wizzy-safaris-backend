@@ -29,7 +29,7 @@ jobs:
       - name: copy build file
         run: |
           mkdir -p $HOME/wizzyBackend
-          cp -R ./dist/* $HOME/wizzy-backend
+          cp -R ./dist/* $HOME/wizzyBackend
           pwd
           ls $HOME/
   #     - run: npm test
