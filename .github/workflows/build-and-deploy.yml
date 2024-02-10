@@ -39,3 +39,4 @@ jobs:
           key: ${{secrets.KEY}}
           script: |
             mkdir test
+            ls -al /var/www/html
