@@ -37,3 +37,5 @@ jobs:
           host: ${{secrets.HOST}}
           username: ${{secrets.USERNAME}}
           key: ${{secrets.KEY}}
+          script: |
+            mkdir test
