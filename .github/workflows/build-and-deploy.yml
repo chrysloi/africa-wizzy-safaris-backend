@@ -1,40 +1,65 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
-name: Node.js CI
+name: Africa wizzy safaris backend
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: ["dev"]
 
 jobs:
-  build:
+  # build:
+  #   runs-on: ubuntu-latest
 
-    runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       node-version: [18.x]
+  #       # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: Use Node.js ${{ matrix.node-version }}
+  #     uses: actions/setup-node@v3
+  #     with:
+  #       node-version: ${{ matrix.node-version }}
+  #       cache: 'npm'
+  #   - run: npm i
+  #   - run: npm run build --if-present
+  #     - run: npm test
+
+  deploy:
+    # needs: build
+    name: deploy to lambda
     strategy:
       matrix:
-        node-version: [18.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
-    steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm i
-    - run: npm run build --if-present
-#     - run: npm test
-    
-  deploy:
-    needs: build
+        node-version: [20.x]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: appleboy/ssh-action@v0.1.3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
         with:
-          host: ${{ secrets.DIGITALOCEAN_SERVER_IP }}
-          username: ${{ secrets.DIGITALOCEAN_USERNAME }}
-          key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
+          node-version: ${{ matrix.node-version }}
+      - name: npm install and build
+        run: |
+          npm ci
+          npm run build --if-present
+        env:
+          CI: true
+      - name: zip
+        uses: montudor/action-zip@v1.0.0
+        with:
+          args: zip -qq -r ./bundle.zip ./
+      - name: default deploy
+        uses: appleboy/lambda-action@master
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: eu-west-1
+          function_name: my-function
+          zip_file: bundle.zip
+      # - uses: appleboy/ssh-action@v0.1.3
+      #   with:
+      #     host: ${{ secrets.DIGITALOCEAN_SERVER_IP }}
+      #     username: ${{ secrets.DIGITALOCEAN_USERNAME }}
+      #     key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
