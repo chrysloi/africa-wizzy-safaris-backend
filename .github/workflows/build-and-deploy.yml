@@ -28,8 +28,10 @@ jobs:
       - run: npm run build --if-present
       - name: copy build file
         run: |
-          mkdir -p $HOME/wizzy-backend
+          mkdir -p $HOME/wizzyBackend
           cp -R ./dist/* $HOME/wizzy-backend
+          pwd
+          ls $HOME/
   #     - run: npm test
 
   deploy:
@@ -43,4 +45,6 @@ jobs:
           username: ${{secrets.USERNAME}}
           key: ${{secrets.KEY}}
           script: |
-            scp -r $HOME/wizzy-backend/* ./test
+            pwd
+            ls $HOME/
+            scp -r $HOME/wizzyBackend/* ./test
