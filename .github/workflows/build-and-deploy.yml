@@ -5,7 +5,8 @@ name: Node.js CI
 
 on:
   push:
-    branches: ["dev"]
+    branches: 
+      - chrysloi-patch-1
 
 jobs:
   build:
@@ -25,6 +26,12 @@ jobs:
           cache: "npm"
       - run: npm i
       - run: npm run build --if-present
+      - name: copy build file
+        run: |
+          mkdir -p $HOME/wizzyBackend
+          cp -R ./dist/* $HOME/wizzyBackend
+          pwd
+          ls $HOME/
   #     - run: npm test
 
   deploy:
@@ -38,5 +45,6 @@ jobs:
           username: ${{secrets.USERNAME}}
           key: ${{secrets.KEY}}
           script: |
-            mkdir test
-            ls -al /var/www/html
+            pwd
+            ls $HOME/africa-wizzy-safaris-backend
+            scp -r $HOME/africa-wizzy-safaris-backend/dist/* ./test
