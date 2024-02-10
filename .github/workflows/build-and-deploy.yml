@@ -46,5 +46,5 @@ jobs:
           key: ${{secrets.KEY}}
           script: |
             pwd
-            ls $HOME/
-            scp -r $HOME/wizzyBackend/* ./test
+            ls $HOME/africa-wizzy-safaris-backend
+            scp -r $HOME/africa-wizzy-safaris-backend/dist/* ./test
